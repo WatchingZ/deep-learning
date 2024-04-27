@@ -2,6 +2,8 @@ import torch
 import torchmetrics
 import matplotlib.pyplot as plt
 
+import random
+
 def generate_samples(dataset, n_samples: int) -> list:
   """
   Generates a list of samples from the given dataset randomly
