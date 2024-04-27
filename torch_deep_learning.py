@@ -184,7 +184,7 @@ def train(model: torch.nn.Module,
     loss = loss_fn(y_logits, y)
     
     train_loss += loss.item()
-    accuracy += (accuracy_fn(y_logits, dim=1), y) * 100).item()
+    accuracy += ((accuracy_fn(y_logits, dim=1), y) * 100).item()
     
     optimizer.zero_grad()
     
