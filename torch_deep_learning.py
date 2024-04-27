@@ -1,3 +1,5 @@
+import torch
+import matplotlib.pyplot as plt
 
 def generate_samples(dataset, n_samples: int) -> list:
   """
