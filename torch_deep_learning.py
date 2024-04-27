@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import random
 
 
-def generate_samples(dataset: Any, n_samples: int) -> tuple:
+def generate_samples(dataset, n_samples: int) -> tuple:
   """
   Generates a list of samples from the given dataset randomly
   
@@ -24,7 +24,7 @@ def generate_samples(dataset: Any, n_samples: int) -> tuple:
 
   return samples
 
-def plot_images(dataset: Any, rows: int, columns: int, figsize: tuple, cmap: str) -> None:
+def plot_images(dataset, rows: int, columns: int, figsize: tuple, cmap: str) -> None:
   """
   Plots a certain amount of images from the given dataset
 
