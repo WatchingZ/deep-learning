@@ -1,4 +1,5 @@
 import torch
+import torchmetrics
 import matplotlib.pyplot as plt
 
 def generate_samples(dataset, n_samples: int) -> list:
