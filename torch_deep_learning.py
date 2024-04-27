@@ -155,13 +155,7 @@ def make_predictions(model: torch.nn.Module, dataset, device: str):
 
   return predictions
 
-def train(model: torch.nn.Module,
-  loss_fn: torch.nn.Module,
-  optimizer: torch.optim.Optimizer,
-  accuracy_fn: torchmetrics.Accuracy,
-  dataloader: torch.utils.data.DataLoader,
-  device: str) -> None:
-    
+def train(model: torch.nn.Module, loss_fn: torch.nn.Module, optimizer: torch.optim.Optimizer, accuracy_fn: torchmetrics.Accuracy, dataloader: torch.utils.data.DataLoader, device: str) -> None:
   """
   Runs a training loop on the given model
   
@@ -197,12 +191,7 @@ def train(model: torch.nn.Module,
   
   print(f"Train Loss: {train_loss: .5f} | Accuracy: {accuracy: .3f}%")
 
-def test(model: torch.nn.Module,
- loss_fn: torch.nn.Module,
- accuracy_fn: torchmetrics.Accuracy,
- dataloader: torch.utils.data.DataLoader,
- device: str):
-
+def test(model: torch.nn.Module, loss_fn: torch.nn.Module, accuracy_fn: torchmetrics.Accuracy, dataloader: torch.utils.data.DataLoader, device: str):
   """
   Runs a testing loop on the given model
   
