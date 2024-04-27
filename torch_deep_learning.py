@@ -1,9 +1,3 @@
-import torch
-import torchvision
-
-import matplotlib.pyplot as plt
-import random
-
 
 def generate_samples(dataset, n_samples: int) -> tuple:
   """
@@ -14,17 +8,17 @@ def generate_samples(dataset, n_samples: int) -> tuple:
   n_samples (int): amount of samples to be extracted from dataset
 
   Returns:
-  A tuple consisting of random samples extracted from the dataset with a length of n_samples along with their corresponding label
+  A list consisting of random samples extracted from the dataset with a length of n_samples along with their corresponding label (can be unpacked)
   """
   
-  samples = ()
+  samples = []
 
   for sample, label in random.sample(list(dataset), k=n_samples):
     samples.append((sample, label))
 
   return samples
 
-def plot_images(dataset, rows: int, columns: int, figsize: tuple, cmap: str) -> None:
+def plot_images(dataset, rows: int, columns: int, figsize: tuple, cmap: str, title=True, fontsize=10) -> None:
   """
   Plots a certain amount of images from the given dataset
 
@@ -34,6 +28,8 @@ def plot_images(dataset, rows: int, columns: int, figsize: tuple, cmap: str) -> 
   columns (int): how many columns of images the figure will consist of
   figsize (tuple): what the resulting figure size of the figure will be
   cmap (str): what the color maps of the plotted images will be
+  title (bool, optional): whether or not a title will be displayed for each image (defaults to True)
+  fontsize (int, optional): font size of the title (defaults to 10)
 
   Returns:
   A matplotlib plot consisting of rows * columns images
@@ -45,7 +41,9 @@ def plot_images(dataset, rows: int, columns: int, figsize: tuple, cmap: str) -> 
     image, label = dataset[i]
     
     plt.subplot(rows, columns, i+1)
-    plt.title(label)
+
+    if title:
+        plt.title(dataset.classes[label], fontsize=fontsize)
     plt.imshow(image.squeeze(), cmap=cmap)
   plt.show();
 
