@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 
 import random
 
+from torch import nn
+
 def generate_samples(dataset, n_samples: int) -> list:
     """
     Generates a list of samples from the given dataset randomly
@@ -23,7 +25,7 @@ def generate_samples(dataset, n_samples: int) -> list:
   
     return samples
 
-def plot_images(dataset, rows: int, columns: int, figsize: tuple, cmap: str, title=True, fontsize=10) -> None:
+def plot_images(dataset, rows: int, columns: int, figsize: tuple, cmap=None, title=True, fontsize=10) -> None:
     """
     Plots a certain amount of images from the given dataset
   
@@ -32,7 +34,7 @@ def plot_images(dataset, rows: int, columns: int, figsize: tuple, cmap: str, tit
     rows (int): how many rows of images the figure will consist of 
     columns (int): how many columns of images the figure will consist of
     figsize (tuple): what the resulting figure size of the figure will be
-    cmap (str): what the color maps of the plotted images will be
+    cmap (str, optional): what the color map of the plotted images will be
     title (bool, optional): whether or not a title will be displayed for each image (defaults to True)
     fontsize (int, optional): font size of the title (defaults to 10)
   
@@ -116,7 +118,7 @@ def plot_linear_predictions(X: torch.Tensor, y: torch.Tensor, predictions=None, 
     Args:
     X (torch.Tensor): the data inputed through the model
     y (torch.Tensor): the labels of the data given
-    predictions (torch.Tensor): The predictions of the model
+    predictions (torch.Tensor, optional): The predictions of the model
     colors (list, optional): The colors of each of scatter plots (defaults to [r, g])
     figsize (tuple, optional): The figure size of the returned plot
   
@@ -143,7 +145,7 @@ def make_predictions(model: torch.nn.Module, dataset, device: str):
     device (str): specifies what device the data should be on
   
     Returns:
-    A list of predictions from the model (in raw logit form)
+    A tensor of predictions from the model (in raw logit form)
     """
     model.eval()
   
@@ -157,4 +159,46 @@ def make_predictions(model: torch.nn.Module, dataset, device: str):
   
         predictions.append(prediction)
   
-    return predictions
+    return torch.cat(predictions)
+
+def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimizer: torch.optim.Optimizer, train_dataloader: torch.utils.data.DataLoader, test_dataloader=None, train=True, test=True, device: str):
+    for epoch in range(epochs):
+        print(f"Epoch: {epoch} \n----------")
+        train_loss = 0
+        
+        if train:
+            for batch, (X, y) in enumerate(train_dataloader):
+                model.train()
+    
+                X, y = X.to(device), y.to(device)
+    
+                y_logits = model(X)
+                loss = loss_fn(y_logits, y)
+    
+                optimizer.zero_grad()
+    
+                loss.backward()
+    
+                optimizer.step()
+    
+                train_loss += loss.item()
+            train_loss /= len(train_dataloader)
+            
+            print(f"Train Loss: {train_loss: .5f}")
+
+        if test:
+            with torch.inference_mode():
+                for batch, (X, y) in enumerate(test_dataloader):
+                    X, y = X.to(device), y.to(device)
+
+                    model.eval()
+
+                    y_logits = model(X)
+                    loss = loss_fn(y_logits, y)
+
+                    test_loss += loss
+                test_loss /= len(test_dataloader)
+
+                print(f"Test Loss: {test_loss: .5f}")
+        
+
