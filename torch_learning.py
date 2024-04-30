@@ -54,7 +54,7 @@ def plot_images(dataset, rows: int, columns: int, figsize: tuple, cmap=None, tit
       plt.imshow(image.squeeze(), cmap=cmap)
     plt.show();
 
-def plot_image_predictions(predictions, dataset, rows: int, columns: int, figsize: tuple, fontsize=10, cmap=None) -> None:
+def plot_image_predictions(predictions, dataset, rows: int, columns: int, figsize: tuple, classes: dict, fontsize=10, cmap=None) -> None:
     """ Plots the image being predicted on and the models prediction on it 
   
     Args:
@@ -63,6 +63,7 @@ def plot_image_predictions(predictions, dataset, rows: int, columns: int, figsiz
     rows (int): how many rows of images the figure will consist of 
     columns (int): how many columns of images the figure will consist of 
     figsize (tuple): the resulting figure size of the plot
+    classes (dict): the classes of the dataset
     fontsize (int, optional): the fontsize of the resulting plot (default is 10)
     cmap (str, optional): the colormap of the resulting images
   
@@ -78,8 +79,8 @@ def plot_image_predictions(predictions, dataset, rows: int, columns: int, figsiz
       image, label = dataset[i]
       prediction = predictions[i]
   
-      title = f"Predicted: {dataset.classes[prediction.argmax()]}: {prediction.max(): .2f} | Truth: {dataset.classes[label]}"
-      color = "green" if dataset.classes[prediction.argmax()] == dataset.classes[label] else "red"
+      title = f"Predicted: {classes[prediction.argmax()]}: {prediction.max(): .2f} | Truth: {classes[label]}"
+      color = "green" if classes[prediction.argmax()] == classes[label] else "red"
   
       plt.title(title, fontsize=fontsize, c=color)
       plt.imshow(image.squeeze(), cmap=cmap)
