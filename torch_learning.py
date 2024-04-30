@@ -162,12 +162,16 @@ def make_predictions(model: torch.nn.Module, dataset, device: str):
   
     return torch.cat(predictions)
 
-def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimizer: torch.optim.Optimizer, train_dataloader: torch.utils.data.DataLoader, device:str, test_dataloader=None, train=True, test=True):
+def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimizer: torch.optim.Optimizer, train_dataloader: torch.utils.data.DataLoader, device:str, test_dataloader=None, train=True, test=True, plot_loss=False):
     for epoch in range(epochs):
         print(f"\nEpoch: {epoch} \n----------")
         train_loss = 0
+
+       
         
         if train:
+            train_results = {"epoch":[], "loss":[]}
+            
             for batch, (X, y) in enumerate(train_dataloader):
                 model.train()
     
@@ -184,10 +188,15 @@ def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimiz
     
                 train_loss += loss.item()
             train_loss /= len(train_dataloader)
+
+            train_results["epoch"].append(epoch + 1)
+            train_results["loss"].append(train_loss)
             
             print(f"Train Loss: {train_loss: .5f}")
 
         if test:
+            test_results = {"epoch":[], "loss":[]}
+            
             with torch.inference_mode():
                 for batch, (X, y) in enumerate(test_dataloader):
                     X, y = X.to(device), y.to(device)
@@ -200,4 +209,14 @@ def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimiz
                     test_loss += loss
                 test_loss /= len(test_dataloader)
 
+                test_results["epoch"].append(epoch)
+                test_results["loss"].append(test_loss)
+                
+
                 print(f"Test Loss: {test_loss: .5f}")
+                
+    if plot_loss:
+        if train:
+            plot_loss(results=train_results)
+        if test:
+            plot_loss(results=test_results)
