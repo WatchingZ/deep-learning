@@ -162,13 +162,11 @@ def make_predictions(model: torch.nn.Module, dataset, device: str):
   
     return torch.cat(predictions)
 
-def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimizer: torch.optim.Optimizer, train_dataloader: torch.utils.data.DataLoader, device:str, test_dataloader=None, train=True, test=True, plot_loss=False):
+def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimizer: torch.optim.Optimizer, train_dataloader: torch.utils.data.DataLoader, device:str, test_dataloader=None, train=True, test=True, return_loss_plot=False):
     for epoch in range(epochs):
         print(f"\nEpoch: {epoch} \n----------")
         train_loss = 0
 
-       
-        
         if train:
             train_results = {"epoch":[], "loss":[]}
             
@@ -215,7 +213,7 @@ def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimiz
 
                 print(f"Test Loss: {test_loss: .5f}")
                 
-    if plot_loss:
+    if return_loss_plot:
         if train:
             plot_loss(results=train_results)
         if test:
