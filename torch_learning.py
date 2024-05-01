@@ -88,7 +88,7 @@ def plot_image_predictions(predictions, dataset, rows: int, columns: int, figsiz
     plt.show();
   
 
-def plot_loss(results, figsize=(15, 7)) -> None:
+def plot_loss(results: dict, name: str, figsize=(15, 7)) -> None:
     """
     Plots a loss curve
   
@@ -96,7 +96,8 @@ def plot_loss(results, figsize=(15, 7)) -> None:
         results (dict): dictionary containing list of values, e.g.
             {"epoch": [...],
              "loss": [...],}
-        figsize (tuple, optional): What the resulting figure size of the plot will be (defaults to (15, 7))
+        name (str): the resulting name of the plt
+        figsize (tuple, optional): what the resulting figure size of the plot will be (defaults to (15, 7))
         
     Returns:
     A matplotlib plot of the loss curves
@@ -106,7 +107,7 @@ def plot_loss(results, figsize=(15, 7)) -> None:
     epochs = results["epoch"]
   
     plt.plot(epochs, losses, label="Loss")
-    plt.title("Loss")
+    plt.title(name)
     plt.xlabel("Epochs")
     plt.legend()
   
@@ -162,14 +163,35 @@ def make_predictions(model: torch.nn.Module, dataset, device: str):
   
     return torch.cat(predictions)
 
-def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimizer: torch.optim.Optimizer, train_dataloader: torch.utils.data.DataLoader, device:str, test_dataloader=None, train=True, test=True, return_loss_plot=False):
+def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimizer: torch.optim.Optimizer, train_dataloader: torch.utils.data.DataLoader, test_dataloader=None, device:str, train=True, test=True, return_loss_plot=False):
+    """
+    Performs a training & optional test loop over an iterable dataset with the given model
+
+    Args:
+    epochs (int): how many iterations the model will be trained for
+    model (torch.nn.Module): the model being trained
+    loss_fn (torch.nn.Module): the loss function being used for training
+    optimizer (torch.optim.Optimizer): the optimizer for training the model
+    train_dataloader (torch.utils.data.DataLoader): the dataloader used when training the model for the training loop
+    test_dataloader (torch.utils.data.DataLoader, optional): dataloader being used for the training loop (optional but highly recommended)
+    device (str): the desired device for the data that the model will be trained on (must be the same as the device of the model)
+    train (bool, True): if a training loop will be used (is always True unless specifically said so)
+    test (bool, True): if a testing loop will be used (is always True unless specifically said so, when set to True a test_dataloader must be used)
+
+    Returns:
+
+    None
+    
+    """
+    
+    train_results = {"epoch":[], "loss":[]}
+    test_results = {"epoch":[], "loss":[]}
+    
     for epoch in range(epochs):
         print(f"\nEpoch: {epoch} \n----------")
         train_loss = 0
 
         if train:
-            train_results = {"epoch":[], "loss":[]}
-            
             for batch, (X, y) in enumerate(train_dataloader):
                 model.train()
     
@@ -187,14 +209,12 @@ def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimiz
                 train_loss += loss.item()
             train_loss /= len(train_dataloader)
 
-            train_results["epoch"].append(epoch + 1)
+            train_results["epoch"].append(epoch)
             train_results["loss"].append(train_loss)
             
             print(f"Train Loss: {train_loss: .5f}")
 
-        if test:
-            test_results = {"epoch":[], "loss":[]}
-            
+        if test:       
             with torch.inference_mode():
                 for batch, (X, y) in enumerate(test_dataloader):
                     X, y = X.to(device), y.to(device)
@@ -215,6 +235,6 @@ def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimiz
                 
     if return_loss_plot:
         if train:
-            plot_loss(results=train_results)
+            plot_loss(results=train_results, name='Train Loss')
         if test:
-            plot_loss(results=test_results)
+            plot_loss(results=test_results, name='Test Loss')
