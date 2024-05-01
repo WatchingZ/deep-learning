@@ -163,7 +163,7 @@ def make_predictions(model: torch.nn.Module, dataset, device: str):
   
     return torch.cat(predictions)
 
-def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimizer: torch.optim.Optimizer, train_dataloader: torch.utils.data.DataLoader, test_dataloader=None, device:str, train=True, test=True, return_loss_plot=False):
+def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimizer: torch.optim.Optimizer, train_dataloader: torch.utils.data.DataLoader, device:str, test_dataloader=None, train=True, test=True, return_loss_plot=False):
     """
     Performs a training & optional test loop over an iterable dataset with the given model
 
