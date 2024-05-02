@@ -1,5 +1,4 @@
 import torch
-import torchmetrics
 import matplotlib.pyplot as plt
 
 import random
