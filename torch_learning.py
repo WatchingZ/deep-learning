@@ -24,7 +24,7 @@ def generate_samples(dataset, n_samples: int) -> list:
   
     return samples
 
-def plot_images(dataset, rows: int, columns: int, figsize: tuple, cmap=None, title=True, fontsize=10) -> None:
+def plot_images(dataset, rows: int, columns: int, figsize: tuple, classes=None, cmap=None, title=True, fontsize=10) -> None:
     """
     Plots a certain amount of images from the given dataset
   
@@ -33,6 +33,7 @@ def plot_images(dataset, rows: int, columns: int, figsize: tuple, cmap=None, tit
     rows (int): how many rows of images the figure will consist of 
     columns (int): how many columns of images the figure will consist of
     figsize (tuple): what the resulting figure size of the figure will be
+    classes (dict): what the function will use when plotting image labels
     cmap (str, optional): what the color map of the plotted images will be
     title (bool, optional): whether or not a title will be displayed for each image (defaults to True)
     fontsize (int, optional): font size of the title (defaults to 10)
@@ -49,7 +50,7 @@ def plot_images(dataset, rows: int, columns: int, figsize: tuple, cmap=None, tit
       plt.subplot(rows, columns, i+1)
   
       if title:
-          plt.title(dataset.classes[label], fontsize=fontsize)
+          plt.title(classes[label], fontsize=fontsize)
       plt.imshow(image.squeeze(), cmap=cmap)
     plt.show();
 
