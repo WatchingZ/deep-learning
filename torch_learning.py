@@ -163,78 +163,78 @@ def make_predictions(model: torch.nn.Module, dataset, device: str):
   
     return torch.cat(predictions)
 
-def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimizer: torch.optim.Optimizer, train_dataloader: torch.utils.data.DataLoader, device:str, test_dataloader=None, train=True, test=True, return_loss_plot=False):
-    """
-    Performs a training & optional test loop over an iterable dataset with the given model
+# def train(epochs: int, model: torch.nn.Module, loss_fn: torch.nn.Module, optimizer: torch.optim.Optimizer, train_dataloader: torch.utils.data.DataLoader, device:str, test_dataloader=None, train=True, test=True, return_loss_plot=False):
+#     """
+#     Performs a training & optional test loop over an iterable dataset with the given model
 
-    Args:
-    epochs (int): how many iterations the model will be trained for
-    model (torch.nn.Module): the model being trained
-    loss_fn (torch.nn.Module): the loss function being used for training
-    optimizer (torch.optim.Optimizer): the optimizer for training the model
-    train_dataloader (torch.utils.data.DataLoader): the dataloader used when training the model for the training loop
-    test_dataloader (torch.utils.data.DataLoader, optional): dataloader being used for the training loop (optional but highly recommended)
-    device (str): the desired device for the data that the model will be trained on (must be the same as the device of the model)
-    train (bool, True): if a training loop will be used (is always True unless specifically said so)
-    test (bool, True): if a testing loop will be used (is always True unless specifically said so, when set to True a test_dataloader must be used)
+#     Args:
+#     epochs (int): how many iterations the model will be trained for
+#     model (torch.nn.Module): the model being trained
+#     loss_fn (torch.nn.Module): the loss function being used for training
+#     optimizer (torch.optim.Optimizer): the optimizer for training the model
+#     train_dataloader (torch.utils.data.DataLoader): the dataloader used when training the model for the training loop
+#     test_dataloader (torch.utils.data.DataLoader, optional): dataloader being used for the training loop (optional but highly recommended)
+#     device (str): the desired device for the data that the model will be trained on (must be the same as the device of the model)
+#     train (bool, True): if a training loop will be used (is always True unless specifically said so)
+#     test (bool, True): if a testing loop will be used (is always True unless specifically said so, when set to True a test_dataloader must be used)
 
-    Returns:
+#     Returns:
 
-    None
+#     None
     
-    """
+#     """
     
-    train_results = {"epoch":[], "loss":[]}
-    test_results = {"epoch":[], "loss":[]}
+#     train_results = {"epoch":[], "loss":[]}
+#     test_results = {"epoch":[], "loss":[]}
     
-    for epoch in range(epochs):
-        print(f"\nEpoch: {epoch} \n----------")
-        train_loss = 0
+#     for epoch in range(epochs):
+#         print(f"\nEpoch: {epoch} \n----------")
+#         train_loss = 0
 
-        if train:
-            for batch, (X, y) in enumerate(train_dataloader):
-                model.train()
+#         if train:
+#             for batch, (X, y) in enumerate(train_dataloader):
+#                 model.train()
     
-                X, y = X.to(device), y.to(device)
+#                 X, y = X.to(device), y.to(device)
     
-                y_logits = model(X)
-                loss = loss_fn(y_logits, y)
+#                 y_logits = model(X)
+#                 loss = loss_fn(y_logits, y)
     
-                optimizer.zero_grad()
+#                 optimizer.zero_grad()
     
-                loss.backward()
+#                 loss.backward()
     
-                optimizer.step()
+#                 optimizer.step()
     
-                train_loss += loss.item()
-            train_loss /= len(train_dataloader)
+#                 train_loss += loss.item()
+#             train_loss /= len(train_dataloader)
 
-            train_results["epoch"].append(epoch)
-            train_results["loss"].append(train_loss)
+#             train_results["epoch"].append(epoch)
+#             train_results["loss"].append(train_loss)
             
-            print(f"Train Loss: {train_loss: .5f}")
+#             print(f"Train Loss: {train_loss: .5f}")
 
-        if test:       
-            with torch.inference_mode():
-                for batch, (X, y) in enumerate(test_dataloader):
-                    X, y = X.to(device), y.to(device)
+#         if test:       
+#             with torch.inference_mode():
+#                 for batch, (X, y) in enumerate(test_dataloader):
+#                     X, y = X.to(device), y.to(device)
 
-                    model.eval()
+#                     model.eval()
 
-                    y_logits = model(X)
-                    loss = loss_fn(y_logits, y)
+#                     y_logits = model(X)
+#                     loss = loss_fn(y_logits, y)
 
-                    test_loss += loss
-                test_loss /= len(test_dataloader)
+#                     test_loss += loss
+#                 test_loss /= len(test_dataloader)
 
-                test_results["epoch"].append(epoch)
-                test_results["loss"].append(test_loss)
+#                 test_results["epoch"].append(epoch)
+#                 test_results["loss"].append(test_loss)
                 
 
-                print(f"Test Loss: {test_loss: .5f}")
+#                 print(f"Test Loss: {test_loss: .5f}")
                 
-    if return_loss_plot:
-        if train:
-            plot_loss(results=train_results, name='Train Loss')
-        if test:
-            plot_loss(results=test_results, name='Test Loss')
+#     if return_loss_plot:
+#         if train:
+#             plot_loss(results=train_results, name='Train Loss')
+#         if test:
+#             plot_loss(results=test_results, name='Test Loss')
