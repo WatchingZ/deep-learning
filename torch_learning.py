@@ -5,6 +5,12 @@ import random
 
 from torch import nn
 
+"""
+A simple PyTorch library with 9 functions made to make the PyTorch workflow easier
+"""
+
+# --- Generates Random Samples --- #
+
 def generate_samples(dataset, n_samples: int) -> list:
     """
     Generates a list of samples from the given dataset randomly
@@ -23,6 +29,8 @@ def generate_samples(dataset, n_samples: int) -> list:
       samples.append((sample, label))
   
     return samples
+
+# --- Function For Unsqueezing a Dataset --- #
 
 def unsqueeze_dataset(dataset, dim) -> list:
     
@@ -46,6 +54,7 @@ def unsqueeze_dataset(dataset, dim) -> list:
 
     return unsqueezed_dataset
 
+# --- Function For Plotting Images --- #
 
 def plot_images(dataset, rows: int, columns: int, figsize: tuple, classes=None, cmap=None, title=True, fontsize=10) -> None:
     """
@@ -78,6 +87,8 @@ def plot_images(dataset, rows: int, columns: int, figsize: tuple, classes=None, 
         
     plt.axis(False)
     plt.show();
+
+# --- Plotting Images And Their Predictions --- #
 
 def plot_image_predictions(predictions, dataset, rows: int, columns: int, figsize: tuple, classes: dict, fontsize=10, cmap=None) -> None:
     """ Plots the image being predicted on and the models prediction on it 
@@ -113,6 +124,7 @@ def plot_image_predictions(predictions, dataset, rows: int, columns: int, figsiz
     plt.axis(False)
     plt.show();
   
+# --- Plotting Loss Function --- #
 
 def plot_loss(results: dict, name: str, figsize=(15, 7)) -> None:
     """
@@ -139,6 +151,8 @@ def plot_loss(results: dict, name: str, figsize=(15, 7)) -> None:
   
     plt.show();
 
+# --- Accuracy Evaluation Function --- #
+
 def eval_accuracy(model: torch.nn.Module, dataset) -> float:
     """
     Evaluates a model's accuracy on a given dataset
@@ -164,6 +178,8 @@ def eval_accuracy(model: torch.nn.Module, dataset) -> float:
 
     return correct / len(dataset)
 
+# --- Plots Linear Regression Predictions --- #
+
 def plot_linear_predictions(X: torch.Tensor, y: torch.Tensor, predictions=None, colors=['r','g'], figsize=(10, 7)) -> None:
     """
     Plots the linear predictions of a certain model
@@ -187,6 +203,7 @@ def plot_linear_predictions(X: torch.Tensor, y: torch.Tensor, predictions=None, 
   
     plt.legend(prop={"size": 14})
 
+# --- Function For Making Predictions --- #
 
 def make_predictions(model: torch.nn.Module, dataset, device: str):
     """
@@ -213,6 +230,8 @@ def make_predictions(model: torch.nn.Module, dataset, device: str):
         predictions.append(prediction)
   
     return torch.cat(predictions)
+
+# --- Train Function --- #
 
 def train(epochs: int, 
           model: torch.nn.Module, 
