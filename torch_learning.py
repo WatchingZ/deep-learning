@@ -75,7 +75,8 @@ def plot_images(dataset, rows: int, columns: int, figsize: tuple, classes=None, 
       if title:
           plt.title(classes[label], fontsize=fontsize)
       plt.imshow(image.squeeze(), cmap=cmap)
-      plt.axis(False)
+        
+    plt.axis(False)
     plt.show();
 
 def plot_image_predictions(predictions, dataset, rows: int, columns: int, figsize: tuple, classes: dict, fontsize=10, cmap=None) -> None:
@@ -108,8 +109,8 @@ def plot_image_predictions(predictions, dataset, rows: int, columns: int, figsiz
   
       plt.title(title, fontsize=fontsize, c=color)
       plt.imshow(image.squeeze(), cmap=cmap)
-      plt.axis(False)
-  
+        
+    plt.axis(False)
     plt.show();
   
 
