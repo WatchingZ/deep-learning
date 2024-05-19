@@ -6,7 +6,7 @@ import random
 from torch import nn
 
 """
-A simple PyTorch library with functions made to make the PyTorch workflow easier
+A simple PyTorch library with 10 functions made to make the PyTorch workflow easier
 """
 
 # --- Generates Random Samples --- #
@@ -35,7 +35,7 @@ def generate_samples(dataset, n_samples: int) -> list:
 def unsqueeze_dataset(dataset, dim) -> list:
     
     """
-    Unsqueezes a given dataset on a given dimension
+    Unsqueezes all samples on a given dataset on a given dimension (you should never be overwriting the original dataset)
 
     Args:
     dataset (Any): dataset being unsqueezed (only samples will be unsqeezed and must be unpackable)
@@ -53,6 +53,26 @@ def unsqueeze_dataset(dataset, dim) -> list:
         unsqueezed_dataset.append((unsqueezed_sample, label))
 
     return unsqueezed_dataset
+
+# --- Function For Permuting A Dataset --- #
+
+def permute_dataset(dataset, *argv) -> list:
+    """
+    Permutes all samples on a given dataset given dimension indexes (you should never be overwriting the original dataset)
+
+    Args:
+    dataset (Any): the dataset being permuted (only samples will be permuted)
+    *argv (ints): the dimension indexes that the samples will be permuted on
+
+    Returns:
+    A permuted dataset
+    """
+    permuted_dataset = []
+
+    for sample, label in dataset:
+        permuted_dataset.append((sample.permute(argv), label))
+    
+    return permuted_dataset
 
 # --- Function For Plotting Images --- #
 
@@ -77,15 +97,16 @@ def plot_images(dataset, rows: int, columns: int, figsize: tuple, classes=None, 
     plt.figure(figsize=figsize)
   
     for i in range(rows * columns):
-      image, label = dataset[i]
+        image, label = dataset[i]
       
-      plt.subplot(rows, columns, i+1)
+        plt.subplot(rows, columns, i+1)
   
-      if title:
-          plt.title(classes[label], fontsize=fontsize)
-      plt.imshow(image.squeeze(), cmap=cmap)
+        if title:
+            plt.title(classes[label], fontsize=fontsize)
+
+        plt.imshow(image.squeeze(), cmap=cmap)  
+        plt.axis(False)
         
-    plt.axis(False)
     plt.show();
 
 # --- Plotting Images And Their Predictions --- #
@@ -126,7 +147,7 @@ def plot_image_predictions(predictions, dataset, rows: int, columns: int, figsiz
   
 # --- Plotting Loss Function --- #
 
-def plot_loss(results: dict, figsize=(15, 7)) -> None:
+def plot_loss(results: dict, figsize=(9, 9)) -> None:
     """
     Plots a loss curve
 
@@ -142,14 +163,21 @@ def plot_loss(results: dict, figsize=(15, 7)) -> None:
     A matplotlib plot of the loss curves
     """
     plt.figure(figsize=figsize)
-    
+
+    plt.subplot(1, 2, 1)
     plt.title("Train Loss")
-    plt.plot(results["epoch"], results["train_loss"], label="Train Loss")
-    plt.plot(results["epoch"], results["test_loss"], label="Test Loss")
+    plt.plot(results["epoch"], results["train_loss"], label="Loss")
     plt.xlabel("Epochs")
     plt.legend()
-    
+  
+    plt.subplot(1, 2, 2)
+    plt.title("Test Loss")
+    plt.plot(results["epoch"], results["test_loss"], label="Loss")
+    plt.xlabel("Epochs")
+    plt.legend()
+
     plt.show();
+
 
 # --- Accuracy Evaluation Function --- #
 
@@ -228,8 +256,8 @@ def make_predictions(model: torch.nn.Module, dataset, device: str):
         prediction = model(X)
   
         predictions.append(prediction)
-  
     return torch.cat(predictions)
+
 
 # --- Train Function --- #
 
