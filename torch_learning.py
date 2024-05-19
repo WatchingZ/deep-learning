@@ -132,18 +132,18 @@ def plot_image_predictions(predictions, dataset, rows: int, columns: int, figsiz
     plt.figure(figsize=figsize)
     
     for i in range(rows * columns):
-      plt.subplot(rows, columns, i+1)
+        plt.subplot(rows, columns, i+1)
   
-      image, label = dataset[i]
-      prediction = predictions[i]
+        image, label = dataset[i]
+        prediction = predictions[i]
   
-      title = f"Predicted: {classes[prediction.argmax()]}: {prediction.max(): .2f} | Truth: {classes[label]}"
-      color = "green" if classes[prediction.argmax()] == classes[label] else "red"
+        title = f"Predicted: {classes[prediction.argmax()]}: {prediction.max(): .2f} | Truth: {classes[label]}"
+        color = "green" if classes[prediction.argmax()] == classes[label] else "red"
   
-      plt.title(title, fontsize=fontsize, c=color)
-      plt.imshow(image.squeeze(), cmap=cmap)
+        plt.title(title, fontsize=fontsize, c=color)
+        plt.imshow(image.squeeze(), cmap=cmap)
         
-    plt.axis(False)
+        plt.axis(False)
     plt.show();
   
 # --- Plotting Loss Function --- #
