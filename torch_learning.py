@@ -6,7 +6,7 @@ import random
 from torch import nn
 
 """
-A simple PyTorch library with 9 functions made to make the PyTorch workflow easier
+A simple PyTorch library with functions made to make the PyTorch workflow easier
 """
 
 # --- Generates Random Samples --- #
