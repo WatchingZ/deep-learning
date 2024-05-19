@@ -1,9 +1,10 @@
 import torch
-import matplotlib.pyplot as plt
+from torch import nn
 
+import matplotlib.pyplot as plt
 import random
 
-from torch import nn
+
 
 """
 A simple PyTorch library with 10 functions made to make the PyTorch workflow easier
