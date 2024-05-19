@@ -142,19 +142,13 @@ def plot_loss(results: dict, figsize=(15, 7)) -> None:
     A matplotlib plot of the loss curves
     """
     plt.figure(figsize=figsize)
-
-    plt.subplot(1, 2, 1)
+    
     plt.title("Train Loss")
-    plt.plot(results["epoch"], results["train_loss"], label="Loss")
+    plt.plot(results["epoch"], results["train_loss"], label="Train Loss")
+    plt.plot(results["epoch"], results["test_loss"], label="Test Loss")
     plt.xlabel("Epochs")
     plt.legend()
-
-    plt.subplot(1, 2, 2)
-    plt.title("Test Loss")
-    plt.plot(results["epoch"], results["test_loss"], label="Loss")
-    plt.xlabel("Epochs")
-    plt.legend()
-
+    
     plt.show();
 
 # --- Accuracy Evaluation Function --- #
