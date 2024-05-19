@@ -126,29 +126,35 @@ def plot_image_predictions(predictions, dataset, rows: int, columns: int, figsiz
   
 # --- Plotting Loss Function --- #
 
-def plot_loss(results: dict, name: str, figsize=(15, 7)) -> None:
+def plot_loss(results: dict, figsize=(15, 7)) -> None:
     """
     Plots a loss curve
-  
+
     Args:
         results (dict): dictionary containing list of values, e.g.
             {"epoch": [...],
-             "loss": [...],}
+             "train_loss": [...],
+             "test_loss": [...],}
         name (str): the resulting name of the plt
         figsize (tuple, optional): what the resulting figure size of the plot will be (defaults to (15, 7))
-        
+
     Returns:
     A matplotlib plot of the loss curves
     """
-  
-    losses = results["loss"]
-    epochs = results["epoch"]
-  
-    plt.plot(epochs, losses, label="Loss")
-    plt.title(name)
+    plt.figure(figsize=figsize)
+
+    plt.subplot(1, 2, 1)
+    plt.title("Train Loss")
+    plt.plot(results["epoch"], results["train_loss"], label="Loss")
     plt.xlabel("Epochs")
     plt.legend()
-  
+
+    plt.subplot(1, 2, 2)
+    plt.title("Test Loss")
+    plt.plot(results["epoch"], results["test_loss"], label="Loss")
+    plt.xlabel("Epochs")
+    plt.legend()
+
     plt.show();
 
 # --- Accuracy Evaluation Function --- #
