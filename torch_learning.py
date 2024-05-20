@@ -176,13 +176,14 @@ def plot_loss(results: dict, figsize=(9, 9)) -> None:
 
 # --- Accuracy Evaluation Function --- #
 
-def eval_accuracy(model: torch.nn.Module, dataset) -> float:
+def eval_accuracy(model: torch.nn.Module, dataset, device: str) -> float:
     """
     Evaluates a model's accuracy on a given dataset
 
     Args: 
     model (torch.nn.Module): the model being evaluated
     dataset (Any): an unpackable iterable (ex. [(sample, label), (sample, label)]) that the model will be evaluated on
+    device (str): the target device for the model
 
     Returns:
     accuracy (float): the accuracy of the model on the dataset
@@ -194,7 +195,7 @@ def eval_accuracy(model: torch.nn.Module, dataset) -> float:
         model.eval()
 
         for sample, label in dataset:
-            y_hat = model(sample) 
+            y_hat = model(sample.to(device)) 
 
             if y_hat.argmax() == label:
                 correct += 1
