@@ -146,18 +146,19 @@ def plot_image_predictions(predictions, dataset, rows: int, columns: int, figsiz
         plt.axis(False)
     plt.show();
   
-# --- Plotting Loss Function --- #
+# --- Plotting Results Function --- #
 
-def plot_loss(results: dict, figsize=(9, 9)) -> None:
+def plot_results(results: dict, figsize=(15, 7)) -> None:
     """
-    Plots a loss curve
+    Plots a loss curve and an accuracy curve given a results dictionary in the format below
 
     Args:
         results (dict): dictionary containing list of values, e.g.
             {"epoch": [...],
-             "train_loss": [...],
-             "test_loss": [...],}
-        name (str): the resulting name of the plt
+            "train_loss": [...],
+            "test_loss": [...],
+            "train_acc": [...],
+            "test_acc:" [...]}
         figsize (tuple, optional): what the resulting figure size of the plot will be (defaults to (15, 7))
 
     Returns:
@@ -165,9 +166,19 @@ def plot_loss(results: dict, figsize=(9, 9)) -> None:
     """
     plt.figure(figsize=figsize)
 
+    plt.subplot(1, 2, 1)
+
     plt.title("Loss")
     plt.plot(results["epoch"], results["train_loss"], label="Train Loss")
     plt.plot(results["epoch"], results["test_loss"], label="Test Loss")
+    plt.xlabel("Epochs")
+    plt.legend()
+
+    plt.subplot(1, 2, 2)
+
+    plt.title("Accuracy")
+    plt.plot(results["epoch"], results["train_acc"], label="Train Accuracy")
+    plt.plot(results["epoch"], results["test_acc"], label="Test Accuracy")
     plt.xlabel("Epochs")
     plt.legend()
 
@@ -252,6 +263,7 @@ def make_predictions(model: torch.nn.Module, dataset, device: str):
         prediction = model(X)
   
         predictions.append(prediction)
+
     return torch.cat(predictions)
 
 
@@ -281,12 +293,16 @@ def train(epochs: int,
     A results dictionary containing the train and testing losses of the model
         eg. {"epoch": [...],
             "train_loss": [...],
-            "test_loss": [...]}
+            "test_loss": [...],
+            "train_acc": [...],
+            "test_acc:" [...]}
     """
     
     results = {"epoch": [],
                "train_loss": [],
-               "test_loss": []}
+               "test_loss": [],
+               "train_acc": [],
+               "test_acc": []}
     
     for epoch in range(epochs):
         results["epoch"].append(epoch)
@@ -294,28 +310,32 @@ def train(epochs: int,
         print(f"\nEpoch: {epoch} \n----------")
 
         train_loss, test_loss = 0, 0
+        train_acc, test_acc = 0,0 
 
         for batch, (X, y) in enumerate(train_dataloader):
             model.train()
 
             X, y = X.to(device), y.to(device)
 
-            y_logits = model(X)
-            loss = loss_fn(y_logits, y)
+            y_hat = model(X)
+            loss = loss_fn(y_hat, y)
 
-            optimizer.zero_grad()
+            optimizer.zero_grad(set_to_none=True)
 
             loss.backward()
 
             optimizer.step()
-
+ 
+            train_acc += ((torch.eq(y, y_hat.argmax(dim=1)).sum().item()) / len(y)) * 100
             train_loss += loss.item()
 
         train_loss /= len(train_dataloader)
+        train_acc /= len(train_dataloader)
 
         results["train_loss"].append(train_loss)
+        results["train_acc"].append(train_acc)
         
-        print(f"Train Loss: {train_loss: .5f}")
+        print(f"Train Loss: {train_loss: .5f} | Accuracy: {train_acc :.3f}")
         
         with torch.inference_mode():
             for batch, (X, y) in enumerate(test_dataloader):
@@ -323,15 +343,19 @@ def train(epochs: int,
 
                 model.eval()
 
-                y_logits = model(X)
-                loss = loss_fn(y_logits, y)
+                y_hat = model(X)
+                loss = loss_fn(y_hat, y)
+                
+                test_acc += ((torch.eq(y, y_hat.argmax(dim=1)).sum().item()) / len(y)) * 100
 
                 test_loss += loss.item()
 
             test_loss /= len(test_dataloader)
+            test_acc /= len(test_dataloader)
 
             results["test_loss"].append(test_loss)
+            results["test_acc"].append(test_acc)
             
-            print(f"Test Loss: {test_loss: .5f}")
+            print(f"Test Loss: {test_loss: .5f} | Accuracy: {test_acc :.3f}")
 
     return results
